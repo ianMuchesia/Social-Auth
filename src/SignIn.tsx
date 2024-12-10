@@ -11,7 +11,7 @@ const SignIn = () => {
           console.log(idToken)
     
           // Send the ID Token to the backend for verification and login
-          const response = await axios.post('http://localhost:5088/api/auth/google', { idToken });
+          const response = await axios.post('http://41.90.106.13:5080/api/auth/google', { idToken });
 
           console.log(response)
     
@@ -28,12 +28,10 @@ const SignIn = () => {
 
 
     
-      const handleFacebookLogin = async (accessToken:string) => { 
+      const handleFacebookLogin = async (accessToken: string) => {
         try {
-          
-    
           // Send the access token to the backend for verification and login
-          const response = await axios.post('http://localhost:5088/api/auth/facebook', { accessToken });
+          const response = await axios.post('http://41.90.106.13:5080/api/auth/facebook', { accessToken });
     
           // Process the backend response
           const { token, user } = response.data;
@@ -41,9 +39,10 @@ const SignIn = () => {
     
           // Save token (e.g., in localStorage)
           localStorage.setItem('authToken', token);
-        } catch (error:any) {
+        } catch (error: any) {
           console.error('Login failed:', error.response?.data || error.message);
         }
+      };
 
         // const appId = '1088597931155576';
         // const responseFacebook = (response:any) => {
@@ -59,12 +58,19 @@ const SignIn = () => {
         //         });
         //     }
         // }
-      }
+      
 
 
-      const respnseFacebook = (response:any) => {
-        console.log(response);
-      }
+      const responseFacebook = (response: any) => {
+        console.log('Facebook response:', response);
+    
+        if (response.accessToken) {
+          // Pass the access token to the backend
+          handleFacebookLogin(response.accessToken);
+        } else {
+          console.error('Failed to get Facebook access token');
+        }
+      };
 
     
       return (
@@ -72,7 +78,7 @@ const SignIn = () => {
        <div className='flex flex-col items-center justify-center h-screen'>
         <div className='flex flex-col items-center justify-center h-screen'>
             <h1 className='text-2xl font-bold'>Sign In</h1>
-            <GoogleOAuthProvider clientId="">
+            <GoogleOAuthProvider clientId="440101887990-9v1rodn4ntq0hujugt92dktuastkvtfe.apps.googleusercontent.com">
           <div>
             <h1>React Google Login</h1>
             <GoogleLogin
@@ -85,10 +91,10 @@ const SignIn = () => {
         <div>
             <h2>Facebook Login</h2>
             <FacebookLogin
-                appId={""}
+                appId={"1101372864364446"}
                 autoLoad={false}
                 fields="name,email,picture"
-                callback={respnseFacebook}
+                callback={responseFacebook}
                 icon="fa-facebook"
             />
         </div>
